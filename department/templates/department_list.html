@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Department Management</h1>
+<!-- Messages -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% if no_data_message %}
+    <div class="alert alert-info">
+        {{ no_data_message }}
+    </div>
+{% else %}
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Sr.No</th>
+                <th>Department Name</th>
+                <th>Description</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for department in departments %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ department.dept_name }}</td>
+                <td>{{ department.description }}</td>
+                <td>
+                    <a href="{% url 'edit_department' department.id %}" class="btn btn-warning btn-sm">Edit</a>
+                </td>
+                <td>
+                    <a href="{% url 'delete_department' department.id %}" class="btn btn-danger btn-sm">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="{% url 'add_department' %}" class="btn btn-primary mb-3">Create Department</a>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.btn-danger');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    const confirmDelete = confirm("Are you sure you want to make this department inactive?");
+                    if (!confirmDelete) {
+                        event.preventDefault();  // Cancel the action if not confirmed
+                    }
+                });
+            });
+        });
+    </script>
+{% endif %}
+{% endblock %}
